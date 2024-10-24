@@ -1,0 +1,308 @@
+#:kivy 2.3.0
+Screen:
+    name: "ventas"
+
+
+#:import hex kivy.utils.get_color_from_hex
+
+<BotonOscuro@Button>:
+	background_normal: ''
+	background_color: hex('#393939')
+
+<BotonRojo@Button>:
+	background_normal: ''
+	background_color: hex('#F24C3D')
+
+
+<LabelOscuro@Label>:
+	canvas.before:
+		Color:
+			rgba: hex('#C70039')
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+<SelectableBoxLayout>:
+    canvas.before:
+        Color:
+            rgba: hex('#EFBC75') if self.selected else hex('#F0F0F0')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+	Label:
+	    id: _hashtag
+		size_hint_x: .1
+		color: (0,0,0,1)
+	Label:
+	    id: _articulo
+		size_hint_x: .5
+		color: (0,0,0,1)
+	Label:
+	    id: _cantidad
+		size_hint_x: .1
+		color: (0,0,0,1)
+	Label:
+        id: _precio_por_articulo
+		size_hint_x: .15
+		color: (0,0,0,1)
+	Label:
+	    id: _precio
+		size_hint_x: .15
+		color: (0,0,0,1)
+
+<RV>:
+    viewclass: 'SelectableBoxLayout'
+    SelectableRecycleBoxLayout:
+        default_size: None, dp(36)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+        multiselect: False
+        touch_multiselect: False
+
+
+<ProductoPorNombrePopup>:
+    size_hint: .5, .55
+	title: 'P'
+	BoxLayout:
+	    orientation: 'vertical'
+	    BoxLayout:
+		    size_hint_y: .8
+		    orientation: 'vertical'
+			BoxLayout:
+				size_hint_y: .1
+				Label:
+					text: 'Codigo'
+					size_hint_x: .25
+				Label:
+					text: 'Nombre'
+					size_hint_x: .5
+				Label:
+					text: 'Cantidad'
+					size_hint_x: .1
+				Label:
+					text: 'Precio'
+					size_hint_x: .15
+			RV:
+			    id: rvs
+        BoxLayout:
+		    size_hint_y: .2
+			Button:
+				text: 'Seleccionar'
+			Button:
+				text: 'Salir'
+				on_release: root_dismiss()
+
+<VentasWindow>:
+	canvas.before:
+		Color:
+			rgba: hex('#F29727')
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	orientation: 'vertical'
+	BoxLayout:
+		size_hint_y: .1
+		spacing: .5
+		Label:
+			id: bienvenido_label
+			size_hint_x: .25
+			text: 'BIENVENIDO: '
+            pos_hint_y: .3
+            haling: 'center'
+            theme_text_color: 'custom'
+            font_size: '30sp'
+            font_name: 'Nuvel.ttf'
+			color: hex('#000000')
+		GridLayout:
+			size_hint_x: .25
+			rows: 2
+			cols: 2
+			Label: 
+				text: 'Fecha: '
+                pos_hint_y: .3
+                haling: 'center'
+                theme_text_color: 'custom'
+                font_size: '20sp'
+                font_name: 'MEDIO VINTAGE.ttf'
+				color: hex('#000000')
+			Label: 
+				id: fecha
+				color: hex('#000000')
+			Label: 
+				text: 'Hora: '
+				color: hex('#000000')
+                pos_hint_y: .3
+                haling: 'center'
+                theme_text_color: 'custom'
+                font_size: '20sp'
+                font_name: 'MEDIO VINTAGE.ttf'
+			Label: 
+				id: hora
+				color: hex('#000000')
+		Label: 
+			size_hint_x: .2
+		BotonOscuro:
+			id: admin_boton
+			size_hint_x: .15
+			text: 'Admin'
+            pos_hint_y: .3
+            haling: 'center'
+            theme_text_color: 'custom'
+            font_size: '20sp'
+            font_name: 'MEDIO VINTAGE.ttf'
+			on_release: root.admin()
+		BotonOscuro: 
+			id: signout_boton
+			size_hint_x: .15
+			text: 'Signout'
+            pos_hint_y: .3
+            haling: 'center'
+            theme_text_color: 'custom'
+            font_size: '20sp'
+            font_name: 'MEDIO VINTAGE.ttf'
+			on_release: root.signout()
+	BoxLayout:
+		canvas.before:
+			Color:
+				rgba: hex('#FFFFFF')
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		size_hint_y: .87
+		spacing: .5
+		BoxLayout:
+			size_hint_x: .7
+			orientation: 'vertical'
+			spacing: .5
+			GridLayout:
+				spacing: .5
+				size_hint_y: .1
+				rows: 2
+				cols: 2
+				LabelOscuro:
+					text: 'Buscar por Código'
+                    font_size: '15sp'
+				LabelOscuro:
+					text: 'Buscar por Nombre'
+
+				TextInput:
+					id: buscar_codigo
+					multiline: False
+					on_text_validate: root.agregar_producto_codigo(self.text)
+				TextInput:
+					id: buscar_nombre
+					multiline: False
+					on_text_validate: root.agregar_producto_nombre(self.text)
+
+			BoxLayout:
+				size_hint_y: .8
+				orientation: 'vertical'
+				BoxLayout:
+					size_hint_y: .05
+					spacing: .5
+					LabelOscuro:
+						text: '#'
+						size_hint_x: .1
+					LabelOscuro:
+						text: 'Artículo'
+						size_hint_x: .5
+					LabelOscuro:
+						text: 'Cantidad'
+						size_hint_x: .1
+					LabelOscuro:
+						text: 'Precio por Artículo'
+						size_hint_x: .15
+					LabelOscuro:
+						text: 'Precio'
+						size_hint_x: .15
+				RV:
+					id: rvs
+			BoxLayout:
+				size_hint_y: .1
+				spacing: .5
+				BotonRojo:
+					text: 'BORRAR ARTICULO'
+                    pos_hint_y: .3
+                    haling: 'center'
+                    theme_text_color: 'custom'
+                    font_size: '20sp'
+                    font_name: 'MEDIO VINTAGE.ttf'
+					on_release: root.eliminar_producto()
+				BotonRojo:
+					text: 'CAMBIAR CANTIDAD'
+                    pos_hint_y: .3
+                    haling: 'center'
+                    theme_text_color: 'custom'
+                    font_size: '20sp'
+                    font_name: 'MEDIO VINTAGE.ttf'
+					on_release: root.modificar_producto()
+		BoxLayout:
+			size_hint_x: .3
+			orientation: 'vertical'
+			canvas.before:
+				Color:
+					rgba: hex('#EFBC75')
+				Rectangle:
+					size: self.size
+					pos: self.pos
+			GridLayout:
+				canvas.before:
+					Color:
+						rgba: hex('#000000')
+					Rectangle:
+						size: self.size
+						pos: self.pos
+				size_hint_y: .4
+				rows: 2
+				cols: 2
+				Label:
+					text: 'Sub-Total'
+                    theme_text_color: 'custom'
+				Label:
+					id: sub_total
+					text: '0.00'
+                    theme_text_color: 'custom'
+				Label: 
+					text: 'Total'
+                    theme_text_color: 'custom'
+				Label:
+					id: total
+					text: '0.00'
+                    theme_text_color: 'custom'
+			BoxLayout:
+				size_hint_y: .6
+				orientation: 'vertical'
+				spacing: .5
+                Image:
+                    source: 'swapit.png'
+                    pos_hint_y: .6
+				Label:
+					id: notificacion_fall
+					size_hint_y: .25
+				Label:
+					id: notificacion_exito
+					size_hint_y: .25
+				BotonOscuro:
+					size_hint_y: .6
+					id: pagar
+					text: 'Pagar'
+                    pos_hint_y: .3
+                    haling: 'center'
+                    theme_text_color: 'custom'
+                    font_size: '20sp'
+                    font_name: 'MEDIO VINTAGE.ttf'
+					on_release: root.pagar()
+				BotonOscuro:
+					size_hint_y: .6
+					id: nueva_compra
+					text: 'Nueva Compra'
+                    pos_hint_y: .3
+                    haling: 'center'
+                    theme_text_color: 'custom'
+                    font_size: '20sp'
+                    font_name: 'MEDIO VINTAGE.ttf'
+					on_release: root.nueva_compra()
+	BoxLayout:
+		size_hint_y: .03
